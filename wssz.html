@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飘动文字效果</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            height: 100vh;
+        }
+        
+        .floating-text {
+            position: absolute;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
+            user-select: none;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 创建飘动文字的函数
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = '我是傻子';
+            
+            // 随机位置
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+            
+            // 随机颜色
+            const hue = Math.floor(Math.random() * 360);
+            text.style.color = `hsl(${hue}, 100%, 50%)`;
+            
+            // 随机大小
+            const size = 20 + Math.random() * 30;
+            text.style.fontSize = `${size}px`;
+            
+            // 随机透明度
+            text.style.opacity = 0.7 + Math.random() * 0.3;
+            
+            // 随机旋转
+            const rotation = -10 + Math.random() * 20;
+            text.style.transform = `rotate(${rotation}deg)`;
+            
+            // 设置初始位置
+            text.style.left = `${startX}px`;
+            text.style.top = `${startY}px`;
+            
+            document.body.appendChild(text);
+            
+            // 动画参数
+            const duration = 10000 + Math.random() * 10000; // 10-20秒
+            const angle = Math.random() * Math.PI * 2; // 随机方向
+            const speed = 50 + Math.random() * 50; // 移动速度
+            
+            let startTime = null;
+            
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = (timestamp - startTime) / duration;
+                
+                if (progress < 1) {
+                    const distance = speed * progress * 100;
+                    const x = startX + Math.cos(angle) * distance;
+                    const y = startY + Math.sin(angle) * distance;
+                    
+                    text.style.left = `${x}px`;
+                    text.style.top = `${y}px`;
+                    
+                    // 淡出效果
+                    text.style.opacity = 1 - progress;
+                    
+                    requestAnimationFrame(animate);
+                } else {
+                    document.body.removeChild(text);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // 每隔一段时间创建一个新文字
+        setInterval(createFloatingText, 500);
+        
+        // 初始创建一些文字
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createFloatingText, i * 200);
+        }
+    </script>
+</body>
+</html>
